@@ -11,48 +11,63 @@
             </li>
         </ul>
         <div class='content'>
-            <span class='title'>{{title}}</span>
-            <ul class='question'>
-                <li class='item' v-for="(item,index) in QContent">
+            <span class='title'>{{ques.title}}</span>
 
-                    <div class="Q-operation ">
-                        <span class="Q-index">Q{{index + 1}}</span>
-                        <span class="icon-circle-plus"></span>
-                        <span class="icon-remove_circle_outline"></span>
-                        <span class="icon-bin"></span>
-                    </div>
+            <draggable :list="ques.qContent">
+                <transition-group name="ques-list">
+                    <ul v-for="(item,index) in ques.qContent" :key="item.id" class='question'>
+                        <li class='item'>
+
+                            <div class="Q-operation ">
+                                <span class="Q-index">Q{{index + 1}}</span>
+                                <span class="icon-circle-plus operation" v-if="item.content instanceof Array"
+                                      @click="addChoice(index)"></span>
+                                <span class="icon-remove_circle_outline operation"
+                                      v-if="item.content.length>2&&item.content instanceof Array"
+                                      @click="deleteChoice(index)"></span>
+                                <span class="icon-bin operation" @click.stop="deleteQues(index)"></span>
+                            </div>
+
+                            <input type="text" v-model="item.Q_title" class="Q-title">
+
+                            <!--问卷选项-->
+                            <!--单选题-->
+                            <div class="option" v-if="item.Q_type=='Radio'"
+                                 v-for="(OneContent,C_index) in item.content">
+                                <input type="radio" :value="OneContent" class="Radio_Opt" :name="item.Q_type+index">
+                                <input type="text" v-model="item.content[C_index]">
+                            </div>
+
+                            <!--多选题-->
+                            <div class="option" v-if="item.Q_type=='MultiSelect'"
+                                 v-for="(OneContent,C_index) in item.content">
+                                <input type="checkbox" :value="OneContent" class="Radio_Opt"
+                                       :name="item.Q_typ+index">
+                                <input type="text" v-model="item.content[C_index]">
+                            </div>
 
 
-                    <p class="Q-title" contenteditable="true" autofocus="autofocus"
-                       required="required">{{item.Q_title}}</p>
-                    <!--<span class="type">{{item.name}}</span>-->
-                    <!--问卷选项-->
-                    <!--单选题-->
-                    <div class="option" v-if="item.Q_type=='Radio'" v-for="(OneContent,C_index) in item.content">
-                        <input type="radio" :value="OneContent" class="Radio_Opt" :name="item.Q_type+index">
-                        <span contenteditable="true">{{OneContent}}</span>
-                    </div>
-                    <!--多选题-->
-                    <div class="option" v-if="item.Q_type=='MultiSelect'" v-for="(OneContent,index) in item.content">
-                        <input type="checkbox" :value="OneContent" class="Radio_Opt" :name="item.Q_typ+index">
-                        <span contenteditable="true">{{OneContent}}</span>
-                    </div>
+                            <!--填空题-->
+                            <div class="option" v-if="item.Q_type=='Completion'">
+                                <input type="text" v-model="item.content">
+                            </div>
 
-                    <!--填空题-->
-                    <div class="option" v-if="item.Q_type=='Completion'">
-                        <span contenteditable="true">{{item.content}}</span>
-                    </div>
 
-                    <input v-if="!item.content" class="option" :class="item.Q_type" :value="item.Q_type">
-                </li>
-            </ul>
+                        </li>
+                    </ul>
+
+                </transition-group>
+            </draggable>
+
         </div>
     </div>
 </template>
 
 <script type='text/ecmascript-6'>
+    import draggable from 'vuedraggable';
+    //    import $ from 'jquery';
     export default{
-        props: ['title'],
+        props: ['id'],
         data(){
             return {
                 QType: [
@@ -78,68 +93,51 @@
                         icon: 'icon-star'
                     }
                 ],
-                QContent: [
-                    {
-                        Q_type: 'Radio',
-                        name: '单选题',
-                        Q_title: '请输入标题',
-                        content: [
-                            'choice1', 'choice2', 'choice3'
-                        ],
-                        isRequired: false
-                    },
-                    {
-                        Q_type: 'MultiSelect',
-                        Q_title: '请输入标题',
-                        name: '多选题',
-                        content: [
-                            'choice1', 'choice2', 'choice3'
-                        ],
-                        isRequired: false
-                    }
-//                    ,
-//                    {
-//                        Q_type: 'Completion',
-//                        Q_title: '标题',
-//                        name: '填空题',
-//                        isRequired: false
-//                    }
-//                    ,
-//                    {
-//                        Q_type: 'Sort',
-//                        name: '排序题',
-//                        Q_title: '标题',
-//                        content: [
-//                            'choice1', 'choice2', 'choice3'
-//                        ],
-//                        isRequired: false
-//                    },
-//                    {
-//                        Q_type: 'Score',
-//                        name: '打分题',
-//                        Q_title: '标题',
-//                        content: [
-//                            'choice1', 'choice2', 'choice3'
-//                        ],
-//                        isRequired: false
-//                    }
-                ]
+                ques: {}
             };
+        },
+        watch: {
+            ques: {
+                handler(curVal, oldVal){
+                    let quesList = JSON.parse(localStorage.getItem('quesList'));
+                    quesList[this.id] = curVal;
+                    localStorage.setItem('quesList', JSON.stringify(quesList));
+                },
+                // 深度监视
+                deep: true
+            }
+        },
+        created(){
+            this.ques = JSON.parse(localStorage.getItem('quesList'))[this.id];
+        },
+        components: {
+            draggable
         },
         methods: {
             addQues(QType, QName){
                 let Ques = {
+                    id: this.ques.qContent.length,
                     Q_type: QType,
                     name: QName,
                     Q_title: '请输入标题',
                     isRequired: false
                 };
-                if (QType !== 'Completion') {
+                if (QType !== 'Completion' && QType !== 'description') {
                     Ques.content = ['choice1', 'choice2'];
                 } else {
                     Ques.content = '请输入内容';
                 }
-                this.QContent.push(Ques);
+                this.ques.qContent.push(Ques);
+            },
+            deleteQues(index){
+                this.ques.qContent.splice(index, 1);
+            },
+            addChoice(index){
+                let choice = 'choice' + (this.ques.qContent[index].content.length + 1);
+                this.ques.qContent[index].content.push(choice);
+            },
+            deleteChoice(index){
+                this.ques.qContent[index].content.pop();
             }
         }
     };
@@ -150,9 +148,12 @@
         color #657180
         line-height 40px
 
+    .ques-list-leave, .ques-list-enter
+        opacity 0
+
     .Q-Content
         position relative
-        margin 0 50px
+        margin 0 5%
         color #657180
         .Q-Type
             position absolute
@@ -182,6 +183,9 @@
             min-height 500px
             margin-left 220px
             background-color #f5f7f9
+            .ghost
+                opacity: 0.5;
+                background: #C8EBFB;
             .title
                 display block
                 line-height 70px
@@ -192,6 +196,10 @@
                 border-right 1px solid #d7dde4
                 border-bottom 1px solid #d7dde4
             .question
+                transition all 1s
+                &:hover
+                    .Q-operation .operation
+                        display block
                 .item
                     position relative
                     margin 0
@@ -209,10 +217,10 @@
                         .Q-index
                             display block
                             line-height 50px
+                            cursor move
                         span
                             line-height 35px
-                            display block
-
+                            display none
                     .Q-title
                         display inline-block
                         line-height 30px

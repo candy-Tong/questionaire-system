@@ -1,20 +1,29 @@
 <template>
     <div class="Q-Header">
-        <span class="Q-name">{{title}}</span>
+        <span class="Q-name">{{ques.title}}</span>
         <div class="publish-btn">
             <span class="icon-play3"></span>
-            <router-link to="/my-Ques" class="publish">发布问卷</router-link>
+            <router-link to="/my-Ques" class="publish" :q-content="ques.qContent">发布问卷</router-link>
         </div>
-        <router-link to="/my-Ques" class="preview">预览</router-link>
-        <!--<span class="preview">预览</span>-->
+        <router-link :to="{name:'Preview',params:{id:this.id}}" class="preview">预览</router-link>
         <span class="icon-eye"></span>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     export default{
-        props: ['title']
+        props: ['id'],
+        data(){
+            return {
+                ques: {}
+            };
+        },
+        created(){
+            this.ques = JSON.parse(localStorage.getItem('quesList'))[this.id];
+            console.log(this.ques);
+        }
     };
+
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
@@ -49,7 +58,7 @@
         .icon-eye
             float right
             line-height 70px
-            margin-right  3px
+            margin-right 3px
             opacity 0.5
 
 </style>

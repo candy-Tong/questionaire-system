@@ -3,17 +3,18 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router';
-// import iView from 'iview';
-// import 'iview/dist/styles/iview.css';    // 使用 CSS
-
-// Vue.use(iView);
+import Resource from 'vue-resource';
+import iView from 'iview';
+import 'iview/dist/styles/iview.css';    // 使用 CSS
+Vue.use(Resource);
+Vue.use(iView);
 
 Vue.config.productionTip = false;
 router.push('/my-Ques');
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  template: '<App/>',
-  components: { App }
+    el: '#app',
+    router,
+    template: '<App/>',
+    components: {App}
 });

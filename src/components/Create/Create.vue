@@ -1,8 +1,7 @@
 <template>
     <div class="create">
-
-        <q-header :title="this.title"></q-header>
-        <q-content :title="this.title"></q-content>
+        <q-header :id="id"></q-header>
+        <q-content :id="id"></q-content>
     </div>
 </template>
 
@@ -11,9 +10,10 @@
     import qContent from './Q-Content/Q-Content.vue';
     export default{
         name: 'create',
+        props: ['ques'],
         data(){
             return {
-                title: '问卷标题'
+                id: this.$route.params.id
             };
         },
         components: {
@@ -21,6 +21,7 @@
             'q-content': qContent
         }
     };
+
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">

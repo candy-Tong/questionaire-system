@@ -1,0 +1,56 @@
+﻿{
+  "quesList": [
+    {
+      "id": 0,
+      "type": "questionaire",
+      "title": "问卷标题1",
+      "publish":false,
+      "qContent": [
+        {
+          "id": 0,
+          "Q_type": "Radio",
+          "name": "单选题",
+          "Q_title": "请输入标题1",
+          "content": [
+            "choice1",
+            "choice2",
+            "choice3"
+          ],
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "type": "exam",
+      "title": "问卷标题2",
+      "publish":false,
+      "qContent": [
+        {
+          "id": 0,
+          "Q_type": "Radio",
+          "name": "单选题",
+          "Q_title": "请输入标题2",
+          "content": [
+            "choice1",
+            "choice2",
+            "choice3"
+          ],
+          "isRequired": false
+        }
+      ]
+    }
+  ],
+  "result":[
+    {
+      "quesId":0,
+      "answer":[
+        {
+          "qId":0,
+          "Q_type":"Radio",
+          "choiceId":0
+        }
+      ]
+    }
+  ]
+}
