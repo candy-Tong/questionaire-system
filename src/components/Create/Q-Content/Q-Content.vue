@@ -11,7 +11,7 @@
             </li>
         </ul>
         <div class='content'>
-            <span class='title'>{{ques.title}}</span>
+            <Input v-model="ques.title" class='title' placeholder="请输入标题"></Input>
 
             <draggable :list="ques.qContent">
                 <transition-group name="ques-list">
@@ -32,24 +32,40 @@
 
                             <!--问卷选项-->
                             <!--单选题-->
-                            <div class="option" v-if="item.Q_type=='Radio'"
-                                 v-for="(OneContent,C_index) in item.content">
-                                <input type="radio" :value="OneContent" class="Radio_Opt" :name="item.Q_type+index">
-                                <input type="text" v-model="item.content[C_index]">
-                            </div>
+                            <Radio-group :vertical="true" v-model="item.answer"
+                                         v-if="item.Q_type=='Radio'">
+                                <div class="option"
+                                     v-for="(OneContent,C_index) in item.content">
+                                    <!--<input type="radio" :value="OneContent" class="Radio_Opt" :name="item.Q_type+index">-->
+                                    <Radio class="Radio_Opt" :label="C_index" :disabled="disabled">{{null}}</Radio>
+                                    <input type="text" v-model="item.content[C_index]" class="choice-input">
+                                </div>
+
+                            </Radio-group>
 
                             <!--多选题-->
-                            <div class="option" v-if="item.Q_type=='MultiSelect'"
-                                 v-for="(OneContent,C_index) in item.content">
-                                <input type="checkbox" :value="OneContent" class="Radio_Opt"
-                                       :name="item.Q_typ+index">
-                                <input type="text" v-model="item.content[C_index]">
-                            </div>
+                            <Checkbox-group v-model="item.answer" v-if="item.Q_type=='MultiSelect'">
+                                <div class="option" v-for="(OneContent,C_index) in item.content">
+                                    <!--<input type="checkbox" :value="OneContent" class="Radio_Opt"-->
+                                    <!--:name="item.Q_typ+index">-->
+                                    <Checkbox :label="C_index" class="choice-item" :disabled="disabled">
+                                        {{null}}
+
+                                    </Checkbox>
+                                    <input type="text" v-model="item.content[C_index]" class="choice-input">
+                                </div>
+                            </Checkbox-group>
 
 
                             <!--填空题-->
                             <div class="option" v-if="item.Q_type=='Completion'">
-                                <input type="text" v-model="item.content">
+                                <!--<input type="text" v-model="item.content">-->
+                                <Input :class="item.Q_type"
+                                       v-model="item.answer" type="textarea"
+                                       placeholder="请输入..."
+                                       :maxlength="5"
+                                       :disabled="disabled"
+                                ></Input>
                             </div>
 
 
@@ -67,33 +83,12 @@
     import draggable from 'vuedraggable';
     //    import $ from 'jquery';
     export default{
-        props: ['id'],
+        props: ['id', 'ques'],
         data(){
             return {
-                QType: [
-                    {
-                        name: '单选题',
-                        icon: 'icon-radio-checked',
-                        Q_type: 'Radio'
-                    }, {
-                        name: '多选题',
-                        icon: 'icon-checkbox',
-                        Q_type: 'MultiSelect'
-                    }, {
-                        name: '填空题',
-                        Q_type: 'Completion',
-                        icon: 'icon-pencil'
-                    }, {
-                        name: '排序题',
-                        Q_type: 'Sort',
-                        icon: 'icon-sort-amount-asc'
-                    }, {
-                        name: '打分题',
-                        Q_type: 'Score',
-                        icon: 'icon-star'
-                    }
-                ],
-                ques: {}
+                QType: [],
+//                ques: this.$route.params.ques,
+                disabled: false
             };
         },
         watch: {
@@ -108,7 +103,9 @@
             }
         },
         created(){
-            this.ques = JSON.parse(localStorage.getItem('quesList'))[this.id];
+//            this.ques = JSON.parse(localStorage.getItem('quesList'))[this.id];
+            this.QType = JSON.parse(localStorage.getItem('QType'));
+            this.disabled = this.ques.type !== 'exam';
         },
         components: {
             draggable
@@ -122,6 +119,20 @@
                     Q_title: '请输入标题',
                     isRequired: false
                 };
+                if (this.ques.type === 'exam') {
+                    switch (QType) {
+                        case 'Completion':
+                            Ques.answer = '';
+                            break;
+                        case 'MultiSelect':
+                            Ques.answer = [];
+                            break;
+                        case 'Radio':
+                            Ques.answer = 0;
+                            break;
+                    }
+                }
+                // description 本来想加入描述部分，可是尚未加入
                 if (QType !== 'Completion' && QType !== 'description') {
                     Ques.content = ['choice1', 'choice2'];
                 } else {
@@ -195,6 +206,9 @@
                 border-left 1px solid #d7dde4
                 border-right 1px solid #d7dde4
                 border-bottom 1px solid #d7dde4
+                .ivu-input
+                    width 50%
+                    font-size 18px
             .question
                 transition all 1s
                 &:hover
@@ -233,11 +247,15 @@
                         clear both
                         display block
                         line-height 30px
+                        max-width 75%
                         /*margin-left 90px*/
                         margin 10px 0 10px 90px
-                        span
+                        font-size 18px
+                        label
                             display inline-block
-                            min-width 70%
+                        .choice-input
+                                 display inline-block
+                                 min-width 80%
                         &.Radio
                             display block
                             line-height 40px

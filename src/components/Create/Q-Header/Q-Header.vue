@@ -3,7 +3,7 @@
         <span class="Q-name">{{ques.title}}</span>
         <div class="publish-btn">
             <span class="icon-play3"></span>
-            <router-link to="/my-Ques" class="publish" :q-content="ques.qContent">发布问卷</router-link>
+            <router-link :to="{name:'Preview',params:{id:this.id}}" class="publish">发布问卷</router-link>
         </div>
         <router-link :to="{name:'Preview',params:{id:this.id}}" class="preview">预览</router-link>
         <span class="icon-eye"></span>
@@ -12,15 +12,9 @@
 
 <script type="text/ecmascript-6">
     export default{
-        props: ['id'],
+        props: ['id', 'ques'],
         data(){
-            return {
-                ques: {}
-            };
-        },
-        created(){
-            this.ques = JSON.parse(localStorage.getItem('quesList'))[this.id];
-            console.log(this.ques);
+            return {};
         }
     };
 

@@ -4,7 +4,7 @@
         <span class="icon-book"></span>
         <span class="system-name">我的问卷</span>
         <router-link to="/my-Ques" class="my-Qus">我的问卷</router-link>
-        <router-link to="/create" class="create-Qus">创建问卷</router-link>
+        <router-link to="/create/type" class="create-Qus">创建问卷</router-link>
     </div>
 </template>
 

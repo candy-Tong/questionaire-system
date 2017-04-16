@@ -1,10 +1,65 @@
 ﻿{
+  "type": [
+    {
+      "name": "questionaire",
+      "title": "创建空白问卷",
+      "description": "从一份空白问卷开始创建",
+      "purpose": [
+        "品牌营销",
+        "产品测试",
+        "消费者分析",
+        "满意度调查",
+        "学术教育",
+        "社会民意"
+      ],
+      "imgUrl": ""
+    },
+    {
+      "name": "exam",
+      "title": "创建空白考卷",
+      "description": "从一份空白考卷开始创建",
+      "purpose": [
+        "培训考核",
+        "教学测验",
+        "员工考核",
+        "心理测试"
+      ],
+      "imgUrl": ""
+    }
+  ],
+  "QType": [
+    {
+      "name": "单选题",
+      "icon": "icon-radio-checked",
+      "Q_type": "Radio"
+    },
+    {
+      "name": "多选题",
+      "icon": "icon-checkbox",
+      "Q_type": "MultiSelect"
+    },
+    {
+      "name": "填空题",
+      "Q_type": "Completion",
+      "icon": "icon-pencil"
+    },
+    {
+      "name": "排序题",
+      "Q_type": "Sort",
+      "icon": "icon-sort-amount-asc"
+    },
+    {
+      "name": "打分题",
+      "Q_type": "Score",
+      "icon": "icon-star"
+    }
+  ],
   "quesList": [
     {
       "id": 0,
       "type": "questionaire",
       "title": "问卷标题1",
-      "publish":false,
+      "publish": false,
       "qContent": [
         {
           "id": 0,
@@ -24,7 +79,7 @@
       "id": 1,
       "type": "exam",
       "title": "问卷标题2",
-      "publish":false,
+      "publish": false,
       "qContent": [
         {
           "id": 0,
@@ -36,19 +91,20 @@
             "choice2",
             "choice3"
           ],
+          "answer": 1,
           "isRequired": false
         }
       ]
     }
   ],
-  "result":[
+  "result": [
     {
-      "quesId":0,
-      "answer":[
+      "quesId": 0,
+      "answer": [
         {
-          "qId":0,
-          "Q_type":"Radio",
-          "choiceId":0
+          "qId": 0,
+          "Q_type": "Radio",
+          "choiceId": 0
         }
       ]
     }

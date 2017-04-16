@@ -1,7 +1,7 @@
 <template>
     <div class="create">
-        <q-header :id="id"></q-header>
-        <q-content :id="id"></q-content>
+        <q-header :id="id" :ques="ques"></q-header>
+        <q-content :id="id" :ques="ques"></q-content>
     </div>
 </template>
 
@@ -10,15 +10,18 @@
     import qContent from './Q-Content/Q-Content.vue';
     export default{
         name: 'create',
-        props: ['ques'],
         data(){
             return {
-                id: this.$route.params.id
+                id: this.$route.params.id,
+                ques: {}
             };
         },
         components: {
             'q-header': qHeader,
             'q-content': qContent
+        },
+        created(){
+            this.ques = JSON.parse(localStorage.getItem('quesList'))[this.id];
         }
     };
 
